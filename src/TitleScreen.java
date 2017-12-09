@@ -59,7 +59,7 @@ public class TitleScreen extends JApplet
 					//System.out.println("Easy");
 
 					easy = true;
-					//sound.stop();
+					sound.stop();
 					addMainBoard();					
 				}
 				

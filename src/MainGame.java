@@ -16,7 +16,7 @@ public class MainGame extends JPanel implements KeyListener
 {
 	Sound sound;
 	private int score = 0;
-	
+
 
 	private boolean itemAway = false;
 
@@ -29,11 +29,11 @@ public class MainGame extends JPanel implements KeyListener
 	private final int gameSize = 700;
 	private final int scorex = 0;
 	private final int scorey = gameSize;
-	
+
 	private final int livesx = 0;
 	private final int livesy = gameSize-40;
 
-	
+
 
 
 	private InputManager inputManager;
@@ -67,9 +67,10 @@ public class MainGame extends JPanel implements KeyListener
 
 	public void init(int level)
 	{
+		sound = new Sound();
 		//playMusicMain();
 
-		//sound = new Sound();
+
 		basket.setX(gameSize/2);
 		basket.setY(gameSize - 100);
 		basket.setWidth(basketWidth);
@@ -207,7 +208,7 @@ public class MainGame extends JPanel implements KeyListener
 	public void resetItem()
 	{
 		itemAway = false;
-		randomX = (int) (Math.random()*gameSize +1);
+		randomX = (int) (Math.random()*(gameSize - item.getWidth()) +1);
 		item.setX(randomX);
 		item.setY(0);
 	}
@@ -215,7 +216,7 @@ public class MainGame extends JPanel implements KeyListener
 
 	public void playMusicMain()
 	{
-		//sound.play("TitleScreenMusic.wav");
+		sound.play("IngameMusic.wav");
 	}
 
 	public void playSoundEffect()
@@ -248,7 +249,7 @@ public class MainGame extends JPanel implements KeyListener
 	public void gameEnding()
 	{
 
-		//sound.stop();
+		playMusicMain();
 
 		int result = JOptionPane.showConfirmDialog(this, 
 				"Your Score: " + score + " - Play Again?", 
@@ -268,8 +269,9 @@ public class MainGame extends JPanel implements KeyListener
 
 	private void resetGame()
 	{
+		playMusicMain();
 		gameOver = false;
-		
+
 		basket.setX(gameSize/2);
 		basket.setY(gameSize - 100);
 
@@ -287,13 +289,15 @@ public class MainGame extends JPanel implements KeyListener
 		page.setFont(new Font("Comic Sans MS", Font.PLAIN, gameSize/20));
 		page.drawString("SCORE: " + Integer.toString(score), scorex, scorey);
 		page.drawString("LIVES: " + Integer.toString(lives), livesx, livesy);
-		
+
 	}
 
 	@Override
 	protected void paintComponent(Graphics page)
 	{
 		super.paintComponent(page);
+		page.setColor(Color.red.darker());
+		page.fillRect(0, 0, 700, 700);
 		//draw bucket
 		page.setColor(Color.black);
 
