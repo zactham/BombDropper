@@ -16,7 +16,7 @@ public class MainGame extends JPanel implements KeyListener
 {
 	Sound sound;
 	private int score = 0;
-	private boolean end;
+	
 
 	private boolean itemAway = false;
 
@@ -29,8 +29,11 @@ public class MainGame extends JPanel implements KeyListener
 	private final int gameSize = 700;
 	private final int scorex = 0;
 	private final int scorey = gameSize;
+	
+	private final int livesx = 0;
+	private final int livesy = gameSize-40;
 
-	private int randomX = (int) (Math.random()*gameSize +1);
+	
 
 
 	private InputManager inputManager;
@@ -43,12 +46,14 @@ public class MainGame extends JPanel implements KeyListener
 	private int basketHeight = 10;
 
 	private Item item = new Item();
-	private int itemWidth = 10;
-	private int itemHeight = 10;
+	private int itemWidth = 20;
+	private int itemHeight = 30;
 	private int movement = 5;
 	private int basketSpeed = 5;
 
 	private boolean caught = false;
+
+	private int randomX = (int) (Math.random()*(gameSize - item.getWidth()) +1);
 
 
 	// Constructor
@@ -62,18 +67,20 @@ public class MainGame extends JPanel implements KeyListener
 
 	public void init(int level)
 	{
-		sound = new Sound();
+		//playMusicMain();
+
+		//sound = new Sound();
 		basket.setX(gameSize/2);
 		basket.setY(gameSize - 100);
 		basket.setWidth(basketWidth);
 		basket.setHeight(basketHeight);
-		basket.createBounds(getX(), getY(), getWidth(), getHeight());
+		basket.createBounds(basket.getX(), basket.getY(), basket.getWidth(), basket.getHeight());
 
 		item.setX(randomX);
 		item.setY(0);
 		item.setWidth(itemWidth);
 		item.setHeight(itemHeight);
-		item.createBounds(getX(), getY(), getWidth(), getHeight());
+		item.createBounds(item.getX(), item.getY(), item.getWidth(), item.getHeight());
 
 		inputManager = new InputManager();
 
@@ -84,7 +91,7 @@ public class MainGame extends JPanel implements KeyListener
 		frame.add(this);
 		frame.setTitle("Game Title");
 
-		JOptionPane.showMessageDialog(start, "Game Instructions");
+		JOptionPane.showMessageDialog(start, "Move Left and Right using arrow keys to stop the bomb and save the citizens");
 
 		//Sets the speed of the game for each mode
 		if (level == 1)		// easy
@@ -128,38 +135,49 @@ public class MainGame extends JPanel implements KeyListener
 
 	public void MainLoop()
 	{
-		item.setY(item.getY()+movement);
-
-		collide();
-
-		if(itemAway || item.getY() > gameSize)
+		if (!gameOver)
 		{
-			resetItem();
-		}
+			basket.updateBounds();
+			item.updateBounds();
 
-		if (inputManager.getKeyPressed(KeyEvent.VK_RIGHT) == true && !rightBounds)
-			basket.setX(basket.getX() + basketSpeed);
+			item.setY(item.getY()+movement);
 
-		if (inputManager.getKeyPressed(KeyEvent.VK_LEFT) == true && !leftBounds)
-			basket.setX(basket.getX() - basketSpeed);
+			collide();
+			livesLost();
 
-		//When S is pressed the music stops
-		if (inputManager.getKeyPressed(KeyEvent.VK_S) == true) 
-			sound.toggle();
+			if(itemAway || item.getY() > gameSize)
+			{
+				resetItem();
+			}
 
-		if(basket.getX() + basket.getWidth() >= gameSize)
-			rightBounds = true;
+			if (inputManager.getKeyPressed(KeyEvent.VK_RIGHT) == true && !rightBounds)
+				basket.setX(basket.getX() + basketSpeed);
 
-		if (basket.getX() <= 0)
-			leftBounds = true;
+			if (inputManager.getKeyPressed(KeyEvent.VK_LEFT) == true && !leftBounds)
+				basket.setX(basket.getX() - basketSpeed);
 
-		// updateGame();
-		repaint();
+			//When S is pressed the music stops
+			if (inputManager.getKeyPressed(KeyEvent.VK_S) == true) 
+				sound.toggle();
 
-		if(lives <1)
-		{
-			gameOver = true;
-			gameEnding();
+			if(basket.getX() + basket.getWidth() + 30 >= gameSize)
+				rightBounds = true;
+			else
+				rightBounds = false;
+
+			if (basket.getX() <= 0)
+				leftBounds = true;
+			else
+				leftBounds = false;
+
+			// updateGame();
+			repaint();
+
+			if(lives <1)
+			{
+				gameOver = true;
+				gameEnding();
+			}
 		}
 	}
 
@@ -167,11 +185,23 @@ public class MainGame extends JPanel implements KeyListener
 	{
 		if (item.getBounds().intersects(basket.getBounds()))
 		{
+			System.out.println("Collide");
 			itemAway = true;
 			score++;
 		}
 
 
+
+
+	}
+
+	public void livesLost()
+	{
+		if(item.getY()+item.getHeight()>gameSize)
+		{
+			itemAway = true;
+			lives--;
+		}
 	}
 
 	public void resetItem()
@@ -185,7 +215,7 @@ public class MainGame extends JPanel implements KeyListener
 
 	public void playMusicMain()
 	{
-		//sound.play("IngameMusic.wav");
+		//sound.play("TitleScreenMusic.wav");
 	}
 
 	public void playSoundEffect()
@@ -218,7 +248,7 @@ public class MainGame extends JPanel implements KeyListener
 	public void gameEnding()
 	{
 
-		sound.stop();
+		//sound.stop();
 
 		int result = JOptionPane.showConfirmDialog(this, 
 				"Your Score: " + score + " - Play Again?", 
@@ -239,6 +269,15 @@ public class MainGame extends JPanel implements KeyListener
 	private void resetGame()
 	{
 		gameOver = false;
+		
+		basket.setX(gameSize/2);
+		basket.setY(gameSize - 100);
+
+		item.setX(randomX);
+		item.setY(0);
+		item.createBounds(item.getX(), item.getY(), item.getWidth(), item.getHeight());
+		score = 0;
+		lives = 3;
 	}
 
 	public void displayScore(Graphics page)
@@ -247,6 +286,8 @@ public class MainGame extends JPanel implements KeyListener
 		page.setColor(Color.black);
 		page.setFont(new Font("Comic Sans MS", Font.PLAIN, gameSize/20));
 		page.drawString("SCORE: " + Integer.toString(score), scorex, scorey);
+		page.drawString("LIVES: " + Integer.toString(lives), livesx, livesy);
+		
 	}
 
 	@Override
@@ -257,8 +298,11 @@ public class MainGame extends JPanel implements KeyListener
 		page.setColor(Color.black);
 
 		if(!itemAway)
-			item.draw(page);
-		basket.draw(page);
+			item.draw(page, randomX);
+		basket.draw(page,basket);
+
+		//basket.drawBounds(page);
+		//item.drawBounds(page);
 
 
 		// drawGame(page);

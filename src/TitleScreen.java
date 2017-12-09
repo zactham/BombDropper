@@ -42,7 +42,7 @@ public class TitleScreen extends JApplet
 		titleScreenImage = new ImageIcon(this.getClass().getResource("TSImage.jpg"));//image	
 		titleScButton = new JButton (titleScreenImage);//image button
 		getContentPane().add(titleScButton);
-		setSize(320,240);
+		setSize(640,390);
 		centerWindow();//centers the window
 
 
@@ -59,7 +59,7 @@ public class TitleScreen extends JApplet
 					//System.out.println("Easy");
 
 					easy = true;
-					sound.stop();
+					//sound.stop();
 					addMainBoard();					
 				}
 				

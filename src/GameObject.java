@@ -105,10 +105,11 @@ public class GameObject
 		}
 	}
 
+
 	protected void drawBounds(Graphics page)
 	{
-		//page.setColor(Color.white);
-		//page.drawRect((int)bounds.getX(), (int)bounds.getY(), (int)bounds.getWidth(), (int) bounds.getHeight());
+		page.setColor(Color.black);
+		page.drawRect((int)bounds.getX(), (int)bounds.getY(), (int)bounds.getWidth(), (int) bounds.getHeight());
 
 	}
 
@@ -116,28 +117,13 @@ public class GameObject
 	{
 		if (getBounds() != null)
 			bounds.setLocation(x, y);
-
-
-		//updateBounds();
+		
 	}
 
-	
+
 
 	public void update()
 	{
-
-	}
-
-	public enum GameObjectType
-	{
-		NONE, 
-		Block1, 
-		Block2, 
-		Block3, 
-		Block4,
-		Block5,
-		Block6,
-		Block7
 
 	}
 }
