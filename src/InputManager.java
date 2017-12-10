@@ -13,6 +13,14 @@ public class InputManager
 		return keyPressed[keyCode];
 		
 	}
+	
+	public void reset()
+	{
+		for(int i = 0; i < 256; i++)
+		{
+			keyPressed[i] = false;
+		}
+	}
 
 }
 	

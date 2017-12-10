@@ -271,6 +271,10 @@ public class MainGame extends JPanel implements KeyListener
 	{
 		playMusicMain();
 		gameOver = false;
+		leftBounds = false;
+		rightBounds = false;
+		
+		inputManager.reset();
 
 		basket.setX(gameSize/2);
 		basket.setY(gameSize - 100);
