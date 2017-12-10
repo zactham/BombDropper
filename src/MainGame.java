@@ -248,8 +248,8 @@ public class MainGame extends JPanel implements KeyListener
 	//
 	public void gameEnding()
 	{
-
-		playMusicMain();
+		sound.stop();
+		//playMusicMain();
 
 		int result = JOptionPane.showConfirmDialog(this, 
 				"Your Score: " + score + " - Play Again?", 
